@@ -1,5 +1,3 @@
-// https://medium.com/@Nelsonalfonso/understanding-custom-errors-in-typescript-a-complete-guide-f47a1df9354c
-
 /**
  * Class representing a validation error.
  * Extends the built-in Error class to include an error code.
