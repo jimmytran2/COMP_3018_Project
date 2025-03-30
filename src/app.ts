@@ -34,5 +34,4 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/user", userRoutes);
 
 app.use(errorHandler);
-
 export default app;
