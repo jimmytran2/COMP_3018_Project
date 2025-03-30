@@ -1,7 +1,7 @@
 /**
- * Branch Service (branchServices.ts)
+ * User Service (userServices.ts)
  *
- * This file defines functions for managing branch data.
+ * This file defines functions for managing user data.
  */
 import {
   createDocument,
@@ -11,13 +11,9 @@ import {
   deleteDocument,
 } from "../repositories/firestoreRepository";
 import { User } from "../models/userModels";
-const COLLECTION: string = "users";
+import { ServiceError } from "../errors/error";
 
-const jimmy: User = {
-  id: "jimmy",
-  name: "jimmy",
-  email: "jimmy",
-};
+const COLLECTION: string = "users";
 
 /**
  * @description Create a new user
@@ -30,7 +26,7 @@ export const createUser = async (user: Partial<User>): Promise<User> => {
     const id: string = await createDocument(COLLECTION, user);
     return { id, ...user } as User;
   } catch {
-    throw new Error(`Could not create branch`);
+    throw new ServiceError(`Could not create user`);
   }
 };
 
@@ -50,7 +46,7 @@ export const getAllUsers = async (): Promise<User[]> => {
       return { id: doc.id, ...data } as User;
     });
   } catch (error) {
-    throw new Error(`Could not retrieve users: ${error}`);
+    throw new ServiceError(`Could not retrieve users: ${error}`);
   }
 };
 
@@ -69,7 +65,7 @@ export const getUserById = async (id: string): Promise<User> => {
 
     return snapshot.data() as User;
   } catch {
-    throw new Error(`Could not retrieve user with id: ${id}`);
+    throw new ServiceError(`Could not retrieve user with id: ${id}`);
   }
 };
 
@@ -88,7 +84,7 @@ export const updateUser = async (
     await updateDocument(COLLECTION, id, user);
     return { id, ...user } as User;
   } catch {
-    throw new Error(`Unable to update branch with id: ${id}`);
+    throw new ServiceError(`Unable to update user with id: ${id}`);
   }
 };
 
@@ -100,16 +96,16 @@ export const updateUser = async (
  */
 export const deleteUser = async (id: string): Promise<void> => {
   try {
-    const branch: FirebaseFirestore.DocumentSnapshot = await getDocumentById(
+    const user: FirebaseFirestore.DocumentSnapshot = await getDocumentById(
       COLLECTION,
       id
     );
 
-    if (!branch) {
+    if (!user) {
       throw new Error(`User with id: ${id} does not exist.`);
     }
     await deleteDocument(COLLECTION, id);
   } catch {
-    throw new Error(`Unable to delete user with id: ${id}`);
+    throw new ServiceError(`Unable to delete user with id: ${id}`);
   }
 };

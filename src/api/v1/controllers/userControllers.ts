@@ -9,6 +9,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../services/userServices";
 import type { User } from "../models/userModels";
+import { successResponse } from "../models/responseModel";
 
 /**
  * @description Create a new user
@@ -22,7 +23,7 @@ export const createUser = async (
 ): Promise<void> => {
   try {
     const newUser: User = await userService.createUser(req.body);
-    res.status(201).json({ message: "User created", data: newUser });
+    res.status(201).json(successResponse(newUser, "User created"));
   } catch (error) {
     next(error);
   }
@@ -40,7 +41,7 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users: User[] = await userService.getAllUsers();
-    res.status(200).json({ message: "Users retrieved", data: users });
+    res.status(200).json(successResponse(users, "Users retrieved"));
   } catch (error) {
     next(error);
   }
@@ -58,7 +59,7 @@ export const getUserById = async (
 ): Promise<void> => {
   try {
     const user: User = await userService.getUserById(req.params.id);
-    res.status(200).json({ message: "User retrieved", data: user });
+    res.status(200).json(successResponse(user, "User retrieved"));
   } catch (error) {
     next(error);
   }
@@ -80,7 +81,7 @@ export const updateUser = async (
       req.body
     );
 
-    res.status(200).json({ message: "User updated", data: updatedUser });
+    res.status(200).json(successResponse(updatedUser, "User updated"));
   } catch (error) {
     next(error);
   }
@@ -98,7 +99,7 @@ export const deleteUser = async (
 ): Promise<void> => {
   try {
     await userService.deleteUser(req.params.id);
-    res.status(200).json({ message: "User deleted" });
+    res.status(200).json(successResponse(undefined, "User deleted"));
   } catch (error) {
     next(error);
   }

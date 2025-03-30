@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import userRoutes from "./api/v1/routes/userRoutes";
 import setupSwagger from "../config/swagger";
+import errorHandler from "./api/v1/middleware/errorHandler";
 
 const app: Express = express();
 
@@ -32,4 +33,5 @@ app.get("/api/v1/health", (req, res) => {
 
 app.use("/api/v1/user", userRoutes);
 
+app.use(errorHandler);
 export default app;
