@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import morgan from "morgan";
-import userRoutes from "./api/v1/routes/userRoutes";
+import studentRoutes from "./api/v1/routes/studentRoutes";
 import setupSwagger from "../config/swagger";
 import errorHandler from "./api/v1/middleware/errorHandler";
 
@@ -31,7 +31,7 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/student", studentRoutes);
 
 app.use(errorHandler);
 export default app;
