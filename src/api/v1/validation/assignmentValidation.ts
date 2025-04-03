@@ -25,6 +25,7 @@ export const assignmentSchema: ObjectSchema = Joi.object({
   }),
   status: Joi.string()
     .valid("ongoing", "closed", "graded")
+    .required()
     // .default("ongoing")
     .messages({
       "any.only": 'Status must be one of "ongoing", "closed", or "graded"',
