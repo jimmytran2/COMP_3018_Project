@@ -23,7 +23,7 @@ export const courseSchema: ObjectSchema = Joi.object({
   }),
 });
 
-export const deleteClassSchema: ObjectSchema = Joi.object({
+export const deleteCourseSchema: ObjectSchema = Joi.object({
   id: Joi.string().required().messages({
     "any.required": "ID is required",
     "string.empty": "ID cannot be empty",

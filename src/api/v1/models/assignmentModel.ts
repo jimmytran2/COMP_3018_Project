@@ -1,7 +1,7 @@
 export type Assignment = {
   id: string;
   name: string;
-  desciption: string;
+  description: string;
   subject: string;
   dueDate: string;
   status: string;
