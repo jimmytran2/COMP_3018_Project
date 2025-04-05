@@ -7,7 +7,7 @@
  */
 
 import express, { Router } from "express";
-import * as courseController from "../controllers/courseController";
+import * as courseController from "../controllers/courseControllers";
 import { validateRequest } from "../middleware/validate";
 import {
   courseSchema,
