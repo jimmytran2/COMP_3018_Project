@@ -124,7 +124,7 @@ export const getAssignmentBySubject = async (
       await assignmentService.getAssignmentBySubject(req.params.subject);
     res
       .status(200)
-      .json(successResponse(assignments, "Assignments from subject"));
+      .json(successResponse(assignments, "Assignments from subject retrieved"));
   } catch (error) {
     next(error);
   }
@@ -145,7 +145,7 @@ export const getAssignmentByStatus = async (
       await assignmentService.getAssignmentByStatus(req.params.status);
     res
       .status(200)
-      .json(successResponse(assignments, "Assignments with status"));
+      .json(successResponse(assignments, "Assignments with status retrieved"));
   } catch (error) {
     next(error);
   }
