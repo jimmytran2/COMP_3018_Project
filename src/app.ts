@@ -3,6 +3,8 @@ import morgan from "morgan";
 import studentRoutes from "./api/v1/routes/studentRoutes";
 import assignmentRoutes from "./api/v1/routes/assignmentRoutes";
 import courseRoutes from "./api/v1/routes/courseRoutes";
+import userRoutes from "./api/v1/routes/userRoutes";
+import adminRoutes from "./api/v1/routes/adminRoutes";
 import setupSwagger from "../config/swagger";
 import errorHandler from "./api/v1/middleware/errorHandler";
 
@@ -36,6 +38,8 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/student", studentRoutes);
 app.use("/api/v1/assignment", assignmentRoutes);
 app.use("/api/v1/course", courseRoutes);
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.use(errorHandler);
 export default app;
