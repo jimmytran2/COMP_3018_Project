@@ -13,6 +13,8 @@ import {
   studentSchema,
   deleteStudentSchema,
 } from "../validation/studentValidation";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -36,7 +38,7 @@ const router: Router = express.Router();
  *               email:
  *                 type: string
  *                 format: email
- *               grade:
+ *               GPA:
  *                 type: number
  *                 minimum: 0
  *                 maximum: 4.5
@@ -46,6 +48,8 @@ const router: Router = express.Router();
  */
 router.post(
   "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(studentSchema),
   studentController.createStudent
 );
@@ -63,7 +67,12 @@ router.post(
  *       200:
  *         description: The list of students
  */
-router.get("/", studentController.getAllStudents);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
+  studentController.getAllStudents
+);
 
 /**
  * @route GET /:id
@@ -85,7 +94,12 @@ router.get("/", studentController.getAllStudents);
  *       200:
  *         description: The student with the corresponding id
  */
-router.get("/:id", studentController.getStudentById);
+router.get(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher", "student"] }),
+  studentController.getStudentById
+);
 
 /**
  * @route PUT /:id
@@ -114,7 +128,7 @@ router.get("/:id", studentController.getStudentById);
  *               email:
  *                 type: string
  *                 format: email
- *               grade:
+ *               GPA:
  *                 type: number
  *                 minimum: 0
  *                 maximum: 4.5
@@ -124,6 +138,8 @@ router.get("/:id", studentController.getStudentById);
  */
 router.put(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
   validateRequest(studentSchema),
   studentController.updateStudent
 );
@@ -150,6 +166,8 @@ router.put(
  */
 router.delete(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(deleteStudentSchema),
   studentController.deleteStudent
 );

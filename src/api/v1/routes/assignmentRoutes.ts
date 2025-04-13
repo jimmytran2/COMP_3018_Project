@@ -13,6 +13,8 @@ import {
   assignmentSchema,
   deleteAssignmentSchema,
 } from "../validation/assignmentValidation";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -48,6 +50,8 @@ const router: Router = express.Router();
  */
 router.post(
   "/",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher"] }),
   validateRequest(assignmentSchema),
   assignmentController.createAssignment
 );
@@ -65,7 +69,12 @@ router.post(
  *       200:
  *         description: The assignments retrieved
  */
-router.get("/", assignmentController.getAllAssignments);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher", "student"] }),
+  assignmentController.getAllAssignments
+);
 
 /**
  * @route GET /:id
@@ -87,7 +96,12 @@ router.get("/", assignmentController.getAllAssignments);
  *       200:
  *         description: the assignment with the corresponding id
  */
-router.get("/:id", assignmentController.getAssignmentById);
+router.get(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher", "student"] }),
+  assignmentController.getAssignmentById
+);
 
 /**
  * @route PUT /:id
@@ -129,6 +143,8 @@ router.get("/:id", assignmentController.getAssignmentById);
  */
 router.put(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher"] }),
   validateRequest(assignmentSchema),
   assignmentController.updateAssignment
 );
@@ -155,6 +171,8 @@ router.put(
  */
 router.delete(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher"] }),
   validateRequest(deleteAssignmentSchema),
   assignmentController.deleteAssignment
 );
@@ -179,7 +197,12 @@ router.delete(
  *       200:
  *         description: the assignments under the subject
  */
-router.get("/subject/:subject", assignmentController.getAssignmentBySubject);
+router.get(
+  "/subject/:subject",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher", "student"] }),
+  assignmentController.getAssignmentBySubject
+);
 
 /**
  * @route GET /status/:status
@@ -201,6 +224,11 @@ router.get("/subject/:subject", assignmentController.getAssignmentBySubject);
  *       200:
  *         description: the assignments with the particular status
  */
-router.get("/status/:status", assignmentController.getAssignmentByStatus);
+router.get(
+  "/status/:status",
+  authenticate,
+  isAuthorized({ hasRole: ["teacher", "student"] }),
+  assignmentController.getAssignmentByStatus
+);
 
 export default router;

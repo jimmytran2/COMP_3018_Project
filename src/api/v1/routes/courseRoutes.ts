@@ -13,6 +13,8 @@ import {
   courseSchema,
   deleteCourseSchema,
 } from "../validation/courseValidation";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -42,7 +44,13 @@ const router: Router = express.Router();
  *       201:
  *         description: The newly created course
  */
-router.post("/", validateRequest(courseSchema), courseController.createCourse);
+router.post(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
+  validateRequest(courseSchema),
+  courseController.createCourse
+);
 
 /**
  * @route GET /
@@ -57,7 +65,12 @@ router.post("/", validateRequest(courseSchema), courseController.createCourse);
  *       200:
  *         description: The list of courses retrieved
  */
-router.get("/", courseController.getAllCourses);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher", "student"] }),
+  courseController.getAllCourses
+);
 
 /**
  * @route GET /:id
@@ -79,7 +92,12 @@ router.get("/", courseController.getAllCourses);
  *       200:
  *         description: The course with the corresponding id
  */
-router.get("/:id", courseController.getCourseById);
+router.get(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher", "student"] }),
+  courseController.getCourseById
+);
 
 /**
  * @route PUT /:id
@@ -117,6 +135,8 @@ router.get("/:id", courseController.getCourseById);
  */
 router.put(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(courseSchema),
   courseController.updateCourse
 );
@@ -143,6 +163,8 @@ router.put(
  */
 router.delete(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(deleteCourseSchema),
   courseController.deleteCourse
 );
