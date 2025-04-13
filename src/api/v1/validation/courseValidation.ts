@@ -16,7 +16,7 @@ export const courseSchema: ObjectSchema = Joi.object({
     "string.base": "Room must be a string",
   }),
   studentCount: Joi.number().integer().min(0).required().messages({
-    "any.required": "Grade is required",
+    "any.required": "Student count is required",
     "number.base": "Student count must be a number",
     "number.integer": "Student count must be an integer",
     "number.min": "Student count cannot be negative",
