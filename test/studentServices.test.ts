@@ -37,7 +37,7 @@ describe("Student Service", () => {
       const mockStudent: Partial<Student> = {
         name: "jimmy",
         email: "jimmy@email.com",
-        grade: 1.2,
+        GPA: 1.2,
       };
 
       (createDocument as jest.Mock).mockResolvedValue(mockId);
@@ -70,7 +70,7 @@ describe("Student Service", () => {
             ({
               name: "jimmy",
               email: "jimmy@email.com",
-              grade: 1.2,
+              GPA: 1.2,
             } as DocumentData),
         } as QueryDocumentSnapshot,
         {
@@ -79,7 +79,7 @@ describe("Student Service", () => {
             ({
               name: "mike",
               email: "mike@email.com",
-              grade: 2.2,
+              GPA: 2.2,
             } as DocumentData),
         } as QueryDocumentSnapshot,
       ];
@@ -101,14 +101,14 @@ describe("Student Service", () => {
         id: "student1",
         name: "jimmy",
         email: "jimmy@email.com",
-        grade: 1.2,
+        GPA: 1.2,
       });
 
       expect(result[1]).toEqual({
         id: "student2",
         name: "mike",
         email: "mike@email.com",
-        grade: 2.2,
+        GPA: 2.2,
       });
     });
   });
@@ -122,7 +122,7 @@ describe("Student Service", () => {
       const mockStudent: Partial<Student> = {
         name: "jimmy",
         email: "jimmy@email.com",
-        grade: 1.2,
+        GPA: 1.2,
       };
 
       (updateDocument as jest.Mock).mockResolvedValue(undefined);
@@ -155,7 +155,7 @@ describe("Student Service", () => {
       const mockStudent: Partial<Student> = {
         name: "jimmy",
         email: "jimmy@email.com",
-        grade: 1.2,
+        GPA: 1.2,
       };
 
       // Act

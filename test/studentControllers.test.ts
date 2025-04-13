@@ -31,7 +31,7 @@ describe("Student Controller", () => {
         id: "S12",
         name: "Michael",
         email: "mscott@dunder.com",
-        grade: 4.1,
+        GPA: 4.1,
       };
 
       (studentService.createStudent as jest.Mock).mockResolvedValue(
@@ -60,7 +60,7 @@ describe("Student Controller", () => {
           id: "S12",
           name: "Michael",
           email: "mscott@dunder.com",
-          grade: 4.1,
+          GPA: 4.1,
         },
       ];
 
@@ -89,7 +89,7 @@ describe("Student Controller", () => {
         id: "S12",
         name: "Michael",
         email: "mscott@dunder.com",
-        grade: 4.1,
+        GPA: 4.1,
       };
 
       (studentService.getStudentById as jest.Mock).mockResolvedValue(
@@ -117,7 +117,7 @@ describe("Student Controller", () => {
         id: "S12",
         name: "Michael",
         email: "mscott@dunder.com",
-        grade: 4.1,
+        GPA: 4.1,
       };
       (studentService.updateStudent as jest.Mock).mockResolvedValue(
         mockStudent

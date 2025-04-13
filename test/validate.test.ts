@@ -148,7 +148,7 @@ describe("Validate function for students", () => {
       id: "S12",
       name: "Michael",
       email: "mscott@dunder.com",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     expect(() => validate(studentSchema, data)).not.toThrow();
@@ -159,7 +159,7 @@ describe("Validate function for students", () => {
       id: "S12",
       name: "",
       email: "mscott@dunder.com",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     expect(() => validate(studentSchema, data)).toThrow();
@@ -169,7 +169,7 @@ describe("Validate function for students", () => {
     const data: Partial<Student> = {
       id: "S12",
       name: "Michael",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     expect(() => validate(studentSchema, data)).toThrow();
@@ -180,29 +180,29 @@ describe("Validate function for students", () => {
       id: "S12",
       name: "Michael",
       email: "mscottdundercom",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     expect(() => validate(studentSchema, data)).toThrow();
   });
 
-  it("should throw an error for negative grade", () => {
+  it("should throw an error for negative GPA", () => {
     const data: Student = {
       id: "S12",
       name: "Michael",
       email: "mscottdundercom",
-      grade: -4.5,
+      GPA: -4.5,
     };
 
     expect(() => validate(studentSchema, data)).toThrow();
   });
 
-  it("should throw an error for a grade over the max", () => {
+  it("should throw an error for a GPA over the max", () => {
     const data: Student = {
       id: "S12",
       name: "Michael",
       email: "mscottdundercom",
-      grade: 100,
+      GPA: 100,
     };
 
     expect(() => validate(studentSchema, data)).toThrow();
