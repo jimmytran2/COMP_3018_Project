@@ -27,8 +27,6 @@ const router: Router = express.Router();
  *   post:
  *     summary: Creates a new course
  *     tags: [Course]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -85,8 +83,6 @@ router.post(
  *   get:
  *     summary: Gets all existing courses
  *     tags: [Course]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The list of courses retrieved
@@ -136,8 +132,6 @@ router.get(
  *   get:
  *     summary: Gets a course by id
  *     tags: [Course]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -189,8 +183,6 @@ router.get(
  *   put:
  *     summary: Updates an existing course
  *     tags: [Course]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -255,8 +247,6 @@ router.put(
  *   delete:
  *     summary: Deletes an existing course
  *     tags: [Course]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

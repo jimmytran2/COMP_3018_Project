@@ -27,8 +27,6 @@ const router: Router = express.Router();
  *   post:
  *     summary: Creates a new student
  *     tags: [Student]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -86,8 +84,6 @@ router.post(
  *   get:
  *     summary: Gets all existing students
  *     tags: [Student]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The list of students retrieved
@@ -137,8 +133,6 @@ router.get(
  *   get:
  *     summary: Gets a student by id
  *     tags: [Student]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -190,8 +184,6 @@ router.get(
  *   put:
  *     summary: Updates an existing student
  *     tags: [Student]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -256,8 +248,6 @@ router.put(
  *   delete:
  *     summary: Deletes an existing student
  *     tags: [Student]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

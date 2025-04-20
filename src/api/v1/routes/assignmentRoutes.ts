@@ -27,8 +27,6 @@ const router: Router = express.Router();
  *   post:
  *     summary: Creates a new assignment
  *     tags: [Assignment]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -89,8 +87,6 @@ router.post(
  *   get:
  *     summary: Gets all existing assignments
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     responses:
  *       200:
  *         description: The assignments retrieved
@@ -144,8 +140,6 @@ router.get(
  *   get:
  *     summary: Gets assignment with corresponding id
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -199,8 +193,6 @@ router.get(
  *   put:
  *     summary: Updates an existing assignment
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -269,8 +261,6 @@ router.put(
  *   delete:
  *     summary: Deletes an existing assignment
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -316,8 +306,6 @@ router.delete(
  *   get:
  *     summary: Gets all assignments under a subject
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: subject
@@ -372,8 +360,6 @@ router.get(
  *   get:
  *     summary: Gets all assignments with a particular status
  *     tags: [Assignment]
- *     security:
- *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: status
