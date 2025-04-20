@@ -27,26 +27,50 @@ const router: Router = express.Router();
  *   post:
  *     summary: Creates a new assignment
  *     tags: [Assignment]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               subject:
- *                 type: string
- *               dueDate:
- *                 type: string
- *                 format: date-time
- *               status:
- *                 type: string
+ *             $ref: '#/components/schemas/Assignment'
+ *           example:
+ *             name: "Research Paper"
+ *             description: "Write a 10-page paper on climate change."
+ *             subject: "Science"
+ *             dueDate: "2025-01-01"
+ *             status: "assigned"
  *     responses:
  *       201:
  *         description: The newly created assignment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "A123"
+ *                 name: "Research Paper"
+ *                 description: "Write a 10-page paper on climate change."
+ *                 subject: "Science"
+ *                 dueDate: "2025-01-01"
+ *                 status: "assigned"
+ *               message: "Assignment created"
+ *       400:
+ *         description: Invalid inputs
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.post(
   "/",
@@ -65,9 +89,44 @@ router.post(
  *   get:
  *     summary: Gets all existing assignments
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     responses:
  *       200:
  *         description: The assignments retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 - id: "A123"
+ *                   name: "Research Paper"
+ *                   description: "Write a 10-page paper on climate change."
+ *                   subject: "Science"
+ *                   dueDate: "2025-05-01"
+ *                   status: "assigned"
+ *                 - id: "B456"
+ *                   name: "Math Homework"
+ *                   description: "Complete problems 1-20 from Chapter 5."
+ *                   subject: "Mathematics"
+ *                   dueDate: "2025-04-25"
+ *                   status: "closed"
+ *               message: "Assignments retrieved"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.get(
   "/",
@@ -78,23 +137,51 @@ router.get(
 
 /**
  * @route GET /:id
- * @description Gets a assignment with corresponding id
+ * @description Gets an assignment with corresponding id
  *
  * @openapi
  * /api/v1/assignment/{id}:
  *   get:
  *     summary: Gets assignment with corresponding id
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
+ *           example: "A123"
  *         required: true
- *         description: id of the assignment to be retrieved
+ *         description: ID of the assignment to be retrieved
  *     responses:
  *       200:
- *         description: the assignment with the corresponding id
+ *         description: The assignment with the corresponding id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "A123"
+ *                 name: "Research Paper"
+ *                 description: "Write a 10-page paper on climate change."
+ *                 subject: "Science"
+ *                 dueDate: "2025-05-01"
+ *                 status: "assigned"
+ *               message: "Assignment retrieved"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.get(
   "/:id",
@@ -110,36 +197,60 @@ router.get(
  * @openapi
  * /api/v1/assignment/{id}:
  *   put:
- *     summary: updates an existing assignment
+ *     summary: Updates an existing assignment
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
- *           type: number
+ *           type: string
+ *           example: "A123"
  *         required: true
- *         description: id of the assignment to be updated
+ *         description: ID of the assignment to be updated
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               subject:
- *                 type: string
- *               dueDate:
- *                 type: string
- *                 format: date-time
- *               status:
- *                 type: string
+ *             $ref: '#/components/schemas/Assignment'
+ *           example:
+ *             name: "Research Paper"
+ *             description: "Write a 10-page paper on climate change."
+ *             subject: "Science"
+ *             dueDate: "2025-05-01"
+ *             status: "completed"
  *     responses:
  *       200:
- *         description: the updated assignment
+ *         description: The updated assignment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "A123"
+ *                 name: "Research Paper"
+ *                 description: "Write a 10-page paper on climate change."
+ *                 subject: "Science"
+ *                 dueDate: "2025-05-01"
+ *                 status: "completed"
+ *               message: "Assignment updated"
+ *       400:
+ *         description: Invalid inputs
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.put(
   "/:id",
@@ -156,18 +267,37 @@ router.put(
  * @openapi
  * /api/v1/assignment/{id}:
  *   delete:
- *     summary: deletes an existing assignment
+ *     summary: Deletes an existing assignment
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
- *           type: number
+ *           type: string
+ *           example: "A123"
  *         required: true
- *         description: id of the assignment to be deleted
+ *         description: ID of the assignment to be deleted
  *     responses:
  *       200:
- *         description: assignment deleted
+ *         description: Assignment deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               message: "Assignment deleted"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.delete(
   "/:id",
@@ -186,16 +316,45 @@ router.delete(
  *   get:
  *     summary: Gets all assignments under a subject
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: subject
  *         schema:
  *           type: string
+ *           example: "Math"
  *         required: true
  *         description: name of subject to retrieve assignments from
  *     responses:
  *       200:
  *         description: the assignments under the subject
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   items:
+ *                     $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 - id: "B456"
+ *                   name: "Math Homework"
+ *                   description: "Complete problems 1-20 from Chapter 5."
+ *                   subject: "Math"
+ *                   dueDate: "2025-04-25"
+ *                   status: "closed"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.get(
   "/subject/:subject",
@@ -206,23 +365,52 @@ router.get(
 
 /**
  * @route GET /status/:status
- * @description Gets all assignments with a status
+ * @description Gets all assignments by status
  *
  * @openapi
  * /api/v1/assignment/status/{status}:
  *   get:
  *     summary: Gets all assignments with a particular status
  *     tags: [Assignment]
+ *     security:
+ *       bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: status
  *         schema:
  *           type: string
+ *           example: "ongoing"
  *         required: true
  *         description: the status associated with the assignments
  *     responses:
  *       200:
  *         description: the assignments with the particular status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   items:
+ *                     $ref: '#/components/schemas/Assignment'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 - id: "B456"
+ *                   name: "Math Homework"
+ *                   description: "Complete problems 1-20 from Chapter 5."
+ *                   subject: "Math"
+ *                   dueDate: "2025-04-25"
+ *                   status: "ongoing"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.get(
   "/status/:status",
