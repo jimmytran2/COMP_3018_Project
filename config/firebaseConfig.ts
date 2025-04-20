@@ -1,14 +1,47 @@
-import { initializeApp, cert, ServiceAccount } from "firebase-admin/app";
+import {
+  initializeApp,
+  cert,
+  ServiceAccount,
+  AppOptions,
+  App,
+  getApps,
+} from "firebase-admin/app";
 import { getAuth, Auth } from "firebase-admin/auth";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
-import serviceAccount from "../comp-3018-project-507fb-firebase-adminsdk-fbsvc-6cea0ede6e.json";
 
-initializeApp({
-  credential: cert(serviceAccount as ServiceAccount),
-});
+const getFirebaseConfig = (): AppOptions => {
+  const { FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY } =
+    process.env;
 
-const auth: Auth = getAuth();
+  if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
+    throw new Error(
+      "Missing Firebase configuration. Please check your environment variables."
+    );
+  }
 
-const db: Firestore = getFirestore();
+  const serviceAccount: ServiceAccount = {
+    projectId: FIREBASE_PROJECT_ID,
+    clientEmail: FIREBASE_CLIENT_EMAIL,
+    privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  };
+
+  return { credential: cert(serviceAccount) };
+};
+
+const initializeFirebaseAdmin = (): App => {
+  const existingApp: App = getApps()[0];
+
+  if (existingApp) {
+    return existingApp;
+  }
+
+  return initializeApp(getFirebaseConfig());
+};
+
+const app: App = initializeFirebaseAdmin();
+
+const auth: Auth = getAuth(app);
+
+const db: Firestore = getFirestore(app);
 
 export { auth, db };

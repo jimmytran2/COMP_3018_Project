@@ -1,5 +1,11 @@
 import express, { Express } from "express";
 import morgan from "morgan";
+import dotenv from "dotenv";
+
+// Load env variables
+dotenv.config();
+
+// Local imports
 import studentRoutes from "./api/v1/routes/studentRoutes";
 import assignmentRoutes from "./api/v1/routes/assignmentRoutes";
 import courseRoutes from "./api/v1/routes/courseRoutes";
