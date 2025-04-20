@@ -61,7 +61,7 @@ describe("Course Service", () => {
       jest.clearAllMocks();
     });
 
-    it("should return all students when the request is successful", async () => {
+    it("should return all courses when the request is successful", async () => {
       // Mock data
       const mockDocs: QueryDocumentSnapshot[] = [
         {
@@ -117,7 +117,7 @@ describe("Course Service", () => {
       jest.clearAllMocks();
     });
 
-    it("should update the student and return the updated data", async () => {
+    it("should update the course and return the updated data", async () => {
       const mockId: string = "A123";
       const mockCourse: Partial<Course> = {
         name: "Networking 101",

@@ -76,3 +76,55 @@ export class ServiceError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+/**
+ * Class representing a authentication error.
+ * Extends the built-in Error class to include an error code.
+ */
+export class AuthenticationError extends Error {
+  code: string;
+  statusCode: number;
+
+  /**
+   * Creates a new ServiceError instance.
+   * @param {string} message - The error message.
+   * @param {string} code - The error code.
+   * @param {number} statusCode - The the http response code.
+   */
+  constructor(
+    message: string,
+    code: string = "AUTHENTICATION_ERROR",
+    statusCode: number = 401
+  ) {
+    super(message);
+    this.name = "AuthenticationError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
+/**
+ * Class representing a authorization error.
+ * Extends the built-in Error class to include an error code.
+ */
+export class AuthorizationError extends Error {
+  code: string;
+  statusCode: number;
+
+  /**
+   * Creates a new ServiceError instance.
+   * @param {string} message - The error message.
+   * @param {string} code - The error code.
+   * @param {number} statusCode - The the http response code.
+   */
+  constructor(
+    message: string,
+    code: string = "AUTHORIZATION_ERROR",
+    statusCode: number = 403
+  ) {
+    super(message);
+    this.name = "AuthorizationError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
