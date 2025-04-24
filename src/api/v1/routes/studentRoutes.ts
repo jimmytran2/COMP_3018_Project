@@ -13,6 +13,8 @@ import {
   studentSchema,
   deleteStudentSchema,
 } from "../validation/studentValidation";
+import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -26,26 +28,49 @@ const router: Router = express.Router();
  *     summary: Creates a new student
  *     tags: [Student]
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               grade:
- *                 type: number
- *                 minimum: 0
- *                 maximum: 4.5
+ *             $ref: '#/components/schemas/Student'
+ *           example:
+ *             name: "Michael Scott"
+ *             email: "michaelscott@dmifflin.com"
+ *             GPA: 1.2
  *     responses:
  *       201:
  *         description: The newly created student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Student'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "S123"
+ *                 name: "Michael Scott"
+ *                 email: "michaelscott@dmifflin.com"
+ *                 GPA: 1.2
+ *               message: "Student created"
+ *       400:
+ *         description: Invalid inputs
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
+
 router.post(
   "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(studentSchema),
   studentController.createStudent
 );
@@ -61,9 +86,43 @@ router.post(
  *     tags: [Student]
  *     responses:
  *       200:
- *         description: The list of students
+ *         description: The list of students retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Student'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 - id: "S123"
+ *                   name: "Michael Scott"
+ *                   email: "michaelscott@dmifflin.com"
+ *                   GPA: 1.2
+ *                 - id: "S124"
+ *                   name: "Dwight Schrute"
+ *                   email: "dschrute@dmifflin.com"
+ *                   GPA: 3.5
+ *               message: "Students retrieved"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
-router.get("/", studentController.getAllStudents);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
+  studentController.getAllStudents
+);
 
 /**
  * @route GET /:id
@@ -79,13 +138,42 @@ router.get("/", studentController.getAllStudents);
  *         name: id
  *         schema:
  *           type: string
+ *           example: "S123"
  *         required: true
- *         description: id of the student to retrieve
+ *         description: ID of the student to be retrieved
  *     responses:
  *       200:
  *         description: The student with the corresponding id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Student'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "S123"
+ *                 name: "Michael Scott"
+ *                 email: "michaelscott@dmifflin.com"
+ *                 GPA: 1.2
+ *               message: "Student retrieved"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
-router.get("/:id", studentController.getStudentById);
+router.get(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
+  studentController.getStudentById
+);
 
 /**
  * @route PUT /:id
@@ -101,29 +189,52 @@ router.get("/:id", studentController.getStudentById);
  *         name: id
  *         schema:
  *           type: string
+ *           example: "S123"
  *         required: true
- *         description: id of the student to update
+ *         description: ID of the student to be updated
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               grade:
- *                 type: number
- *                 minimum: 0
- *                 maximum: 4.5
+ *             $ref: '#/components/schemas/Student'
+ *           example:
+ *             name: "Michael Scott"
+ *             email: "michaelscott@dmifflin.com"
+ *             GPA: 1.2
  *     responses:
  *       200:
  *         description: The updated student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Student'
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               data:
+ *                 id: "S123"
+ *                 name: "Michael Scott"
+ *                 email: "michaelscott@dmifflin.com"
+ *                 GPA: 1.2
+ *               message: "Student updated"
+ *       400:
+ *         description: Invalid inputs
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.put(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
   validateRequest(studentSchema),
   studentController.updateStudent
 );
@@ -142,14 +253,33 @@ router.put(
  *         name: id
  *         schema:
  *           type: string
+ *           example: "S123"
  *         required: true
- *         description: id of the student to delete
+ *         description: ID of the student to be deleted
  *     responses:
  *       200:
  *         description: Student deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "success"
+ *               message: "Student deleted"
+ *       403:
+ *         description: Unauthorized - Insufficient role
+ *       500:
+ *         description: Internal Server Error
  */
 router.delete(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateRequest(deleteStudentSchema),
   studentController.deleteStudent
 );

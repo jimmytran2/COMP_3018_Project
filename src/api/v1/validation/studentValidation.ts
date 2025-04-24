@@ -21,11 +21,11 @@ export const studentSchema: ObjectSchema = Joi.object({
       "string.email": "Invalid email format",
       "string.empty": "Email cannot be empty",
     }),
-  grade: Joi.number().min(0).max(4.5).required().messages({
-    "any.required": "Grade is required",
-    "number.base": "Grade must be a number",
-    "number.min": "Grade cannot be less than 0",
-    "number.max": "Grade cannot be greater than 4.5",
+  GPA: Joi.number().min(0).max(4.5).required().messages({
+    "any.required": "GPA is required",
+    "number.base": "GPA must be a number",
+    "number.min": "GPA cannot be less than 0",
+    "number.max": "GPA cannot be greater than 4.5",
   }),
 });
 

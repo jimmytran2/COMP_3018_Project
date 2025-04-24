@@ -1,4 +1,5 @@
 import request from "supertest";
+import { Request, Response, NextFunction } from "express";
 import app from "../src/app";
 import {
   createStudent,
@@ -17,6 +18,22 @@ jest.mock("../src/api/v1/controllers/studentControllers", () => ({
   deleteStudent: jest.fn((req, res) => res.status(200).send()),
 }));
 
+jest.mock("../src/api/v1/middleware/authenticate", () => {
+  return jest.fn((req: Request, res: Response, next: NextFunction) => next());
+});
+
+jest.mock("../src/api/v1/middleware/authorize", () => {
+  return jest.fn(
+    () =>
+      (req: Request, res: Response, next: NextFunction): void =>
+        next()
+  );
+});
+
+jest.mock("../src/api/v1/middleware/rateLimiter", () => ({
+  apiLimiter: (req: any, res: any, next: any) => next(),
+}));
+
 describe("Student Routes", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -28,7 +45,7 @@ describe("Student Routes", () => {
         id: "S12",
         name: "Michael",
         email: "mscott@dunder.com",
-        grade: 4.1,
+        GPA: 4.1,
       };
 
       await request(app).post("/api/v1/student").send(mockStudent);
@@ -58,7 +75,7 @@ describe("Student Routes", () => {
         id: "S12",
         name: "Michael",
         email: "mscott@dunder.com",
-        grade: 4.1,
+        GPA: 4.1,
       };
 
       const mockId: string = "A123";

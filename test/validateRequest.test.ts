@@ -202,7 +202,7 @@ describe("validateRequest Middleware", () => {
       id: "S12",
       name: "Michael",
       email: "mscott@dunder.com",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     const middleware: MiddlewareFunction = validateRequest(studentSchema);
@@ -221,7 +221,7 @@ describe("validateRequest Middleware", () => {
       id: "",
       name: "",
       email: "",
-      grade: "",
+      GPA: "",
     };
 
     const middleware: MiddlewareFunction = validateRequest(studentSchema);
@@ -251,12 +251,12 @@ describe("validateRequest Middleware", () => {
     expect(mockNext).not.toHaveBeenCalled();
   });
 
-  it("should fail for negative grade for studentSchema", () => {
+  it("should fail for negative GPA for studentSchema", () => {
     mockReq.body = {
       id: "S12",
       name: "Michael",
       email: "mscott@dunder.com",
-      grade: -99,
+      GPA: -99,
     };
 
     const middleware: MiddlewareFunction = validateRequest(studentSchema);
@@ -270,12 +270,12 @@ describe("validateRequest Middleware", () => {
     expect(mockNext).not.toHaveBeenCalled();
   });
 
-  it("should fail for above maximum grade for studentSchema", () => {
+  it("should fail for above maximum GPA for studentSchema", () => {
     mockReq.body = {
       id: "S12",
       name: "Michael",
       email: "mscott@dunder.com",
-      grade: 99,
+      GPA: 99,
     };
 
     const middleware: MiddlewareFunction = validateRequest(studentSchema);
@@ -294,7 +294,7 @@ describe("validateRequest Middleware", () => {
       id: "S12",
       name: "Michael",
       email: "mscottdundercom",
-      grade: 4.1,
+      GPA: 4.1,
     };
 
     const middleware: MiddlewareFunction = validateRequest(studentSchema);

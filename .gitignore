@@ -1,5 +1,6 @@
 node_modules/
 dist/
 .vscode/
+.env
 
 comp-3018-project-507fb-firebase-adminsdk-fbsvc-6cea0ede6e.json

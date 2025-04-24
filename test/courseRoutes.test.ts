@@ -1,4 +1,5 @@
 import request from "supertest";
+import { Request, Response, NextFunction } from "express";
 import app from "../src/app";
 import {
   createCourse,
@@ -15,6 +16,22 @@ jest.mock("../src/api/v1/controllers/courseControllers", () => ({
   getCourseById: jest.fn((req, res) => res.status(200).send()),
   updateCourse: jest.fn((req, res) => res.status(200).send()),
   deleteCourse: jest.fn((req, res) => res.status(200).send()),
+}));
+
+jest.mock("../src/api/v1/middleware/authenticate", () => {
+  return jest.fn((req: Request, res: Response, next: NextFunction) => next());
+});
+
+jest.mock("../src/api/v1/middleware/authorize", () => {
+  return jest.fn(
+    () =>
+      (req: Request, res: Response, next: NextFunction): void =>
+        next()
+  );
+});
+
+jest.mock("../src/api/v1/middleware/rateLimiter", () => ({
+  apiLimiter: (req: any, res: any, next: any) => next(),
 }));
 
 describe("Course Routes", () => {

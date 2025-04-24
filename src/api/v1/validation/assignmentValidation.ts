@@ -24,11 +24,11 @@ export const assignmentSchema: ObjectSchema = Joi.object({
     "date.iso": "Due date must be in ISO format (e.g. 2025-12-25)",
   }),
   status: Joi.string()
-    .valid("ongoing", "closed", "graded")
+    .valid("ongoing", "closed", "graded", "pending")
     .required()
-    // .default("ongoing")
     .messages({
-      "any.only": 'Status must be one of "ongoing", "closed", or "graded"',
+      "any.only":
+        'Status must be one of "ongoing", "closed","graded", or "pending"',
     }),
 });
 

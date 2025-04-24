@@ -18,7 +18,7 @@
  *           type: string
  *           format: email
  *           description: Email address of the student
- *         grade:
+ *         GPA:
  *           type: number
  *           minimum: 0
  *           maximum: 4.5
@@ -28,5 +28,5 @@ export type Student = {
   id: string;
   name: string;
   email: string;
-  grade: number;
+  GPA: number;
 };

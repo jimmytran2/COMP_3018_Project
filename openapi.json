@@ -1,0 +1,1175 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Class/Course Organizer API Documentation",
+    "version": "1.0.0",
+    "description": "Documention for class and course organizer app. Perform CRUD operations on classes, courses, and students"
+  },
+  "server": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Assignment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for an assignment"
+          },
+          "name": {
+            "type": "string",
+            "description": "Title or name of the assignment"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the assignment"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject the assignment is related to"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Due date for the assignment (e.g. 2025-12-25)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the assignment (i.e., \"ongoing\", \"closed\", or \"graded\")"
+          }
+        }
+      },
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for a course"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the course"
+          },
+          "room": {
+            "type": "string",
+            "description": "Room where the course is held"
+          },
+          "studentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of students enrolled in the course (must be at least 0)"
+          }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for a student"
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the student"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the student"
+          },
+          "GPA": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 4.5,
+            "description": "Grade point average (GPA) of the student, ranging from 0 to 4.5"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/v1/assignment": {
+      "post": {
+        "summary": "Creates a new assignment",
+        "tags": [
+          "Assignment"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Assignment"
+              },
+              "example": {
+                "name": "Research Paper",
+                "description": "Write a 10-page paper on climate change.",
+                "subject": "Science",
+                "dueDate": "2025-01-01",
+                "status": "assigned"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The newly created assignment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Assignment"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "A123",
+                    "name": "Research Paper",
+                    "description": "Write a 10-page paper on climate change.",
+                    "subject": "Science",
+                    "dueDate": "2025-01-01",
+                    "status": "assigned"
+                  },
+                  "message": "Assignment created"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all existing assignments",
+        "tags": [
+          "Assignment"
+        ],
+        "responses": {
+          "200": {
+            "description": "The assignments retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Assignment"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": "A123",
+                      "name": "Research Paper",
+                      "description": "Write a 10-page paper on climate change.",
+                      "subject": "Science",
+                      "dueDate": "2025-05-01",
+                      "status": "assigned"
+                    },
+                    {
+                      "id": "B456",
+                      "name": "Math Homework",
+                      "description": "Complete problems 1-20 from Chapter 5.",
+                      "subject": "Mathematics",
+                      "dueDate": "2025-04-25",
+                      "status": "closed"
+                    }
+                  ],
+                  "message": "Assignments retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/assignment/{id}": {
+      "get": {
+        "summary": "Gets assignment with corresponding id",
+        "tags": [
+          "Assignment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "A123"
+            },
+            "required": true,
+            "description": "ID of the assignment to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The assignment with the corresponding id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Assignment"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "A123",
+                    "name": "Research Paper",
+                    "description": "Write a 10-page paper on climate change.",
+                    "subject": "Science",
+                    "dueDate": "2025-05-01",
+                    "status": "assigned"
+                  },
+                  "message": "Assignment retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an existing assignment",
+        "tags": [
+          "Assignment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "A123"
+            },
+            "required": true,
+            "description": "ID of the assignment to be updated"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Assignment"
+              },
+              "example": {
+                "name": "Research Paper",
+                "description": "Write a 10-page paper on climate change.",
+                "subject": "Science",
+                "dueDate": "2025-05-01",
+                "status": "completed"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated assignment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Assignment"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "A123",
+                    "name": "Research Paper",
+                    "description": "Write a 10-page paper on climate change.",
+                    "subject": "Science",
+                    "dueDate": "2025-05-01",
+                    "status": "completed"
+                  },
+                  "message": "Assignment updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an existing assignment",
+        "tags": [
+          "Assignment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "A123"
+            },
+            "required": true,
+            "description": "ID of the assignment to be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignment deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Assignment deleted"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/assignment/subject/{subject}": {
+      "get": {
+        "summary": "Gets all assignments under a subject",
+        "tags": [
+          "Assignment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subject",
+            "schema": {
+              "type": "string",
+              "example": "Math"
+            },
+            "required": true,
+            "description": "name of subject to retrieve assignments from"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the assignments under the subject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "items": {
+                        "$ref": "#/components/schemas/Assignment"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": "B456",
+                      "name": "Math Homework",
+                      "description": "Complete problems 1-20 from Chapter 5.",
+                      "subject": "Math",
+                      "dueDate": "2025-04-25",
+                      "status": "closed"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/assignment/status/{status}": {
+      "get": {
+        "summary": "Gets all assignments with a particular status",
+        "tags": [
+          "Assignment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "example": "ongoing"
+            },
+            "required": true,
+            "description": "the status associated with the assignments"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the assignments with the particular status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "items": {
+                        "$ref": "#/components/schemas/Assignment"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": "B456",
+                      "name": "Math Homework",
+                      "description": "Complete problems 1-20 from Chapter 5.",
+                      "subject": "Math",
+                      "dueDate": "2025-04-25",
+                      "status": "ongoing"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/course": {
+      "post": {
+        "summary": "Creates a new course",
+        "tags": [
+          "Course"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Course"
+              },
+              "example": {
+                "name": "Biology 101",
+                "room": "B204",
+                "studentCount": 25
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The newly created course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "C101",
+                    "name": "Biology 101",
+                    "room": "B204",
+                    "studentCount": 25
+                  },
+                  "message": "Course created"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all existing courses",
+        "tags": [
+          "Course"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of courses retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": "C101",
+                      "name": "Biology 101",
+                      "room": "B204",
+                      "studentCount": 25
+                    },
+                    {
+                      "id": "C102",
+                      "name": "Introduction to Programming",
+                      "room": "A101",
+                      "studentCount": 30
+                    }
+                  ],
+                  "message": "Courses retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/course/{id}": {
+      "get": {
+        "summary": "Gets a course by id",
+        "tags": [
+          "Course"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "C101"
+            },
+            "required": true,
+            "description": "ID of the course to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The course with the corresponding id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "C101",
+                    "name": "Biology 101",
+                    "room": "B204",
+                    "studentCount": 25
+                  },
+                  "message": "Course retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an existing course",
+        "tags": [
+          "Course"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "C101"
+            },
+            "required": true,
+            "description": "ID of the course to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Course"
+              },
+              "example": {
+                "name": "Physics 101",
+                "room": "B102",
+                "studentCount": 30
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "C101",
+                    "name": "Physics 101",
+                    "room": "B102",
+                    "studentCount": 30
+                  },
+                  "message": "Course updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an existing course",
+        "tags": [
+          "Course"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "C101"
+            },
+            "required": true,
+            "description": "ID of the course to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Course deleted"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/student": {
+      "post": {
+        "summary": "Creates a new student",
+        "tags": [
+          "Student"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              },
+              "example": {
+                "name": "Michael Scott",
+                "email": "michaelscott@dmifflin.com",
+                "GPA": 1.2
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The newly created student",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Student"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "S123",
+                    "name": "Michael Scott",
+                    "email": "michaelscott@dmifflin.com",
+                    "GPA": 1.2
+                  },
+                  "message": "Student created"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all existing students",
+        "tags": [
+          "Student"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of students retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Student"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": "S123",
+                      "name": "Michael Scott",
+                      "email": "michaelscott@dmifflin.com",
+                      "GPA": 1.2
+                    },
+                    {
+                      "id": "S124",
+                      "name": "Dwight Schrute",
+                      "email": "dschrute@dmifflin.com",
+                      "GPA": 3.5
+                    }
+                  ],
+                  "message": "Students retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/student/{id}": {
+      "get": {
+        "summary": "Gets a student by id",
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "S123"
+            },
+            "required": true,
+            "description": "ID of the student to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The student with the corresponding id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Student"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "S123",
+                    "name": "Michael Scott",
+                    "email": "michaelscott@dmifflin.com",
+                    "GPA": 1.2
+                  },
+                  "message": "Student retrieved"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an existing student",
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "S123"
+            },
+            "required": true,
+            "description": "ID of the student to be updated"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              },
+              "example": {
+                "name": "Michael Scott",
+                "email": "michaelscott@dmifflin.com",
+                "GPA": 1.2
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated student",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Student"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "S123",
+                    "name": "Michael Scott",
+                    "email": "michaelscott@dmifflin.com",
+                    "GPA": 1.2
+                  },
+                  "message": "Student updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an existing student",
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "example": "S123"
+            },
+            "required": true,
+            "description": "ID of the student to be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "message": "Student deleted"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized - Insufficient role"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "summary": "Get health status of the application",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "The application's status, uptime, the current timestamp, and version"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

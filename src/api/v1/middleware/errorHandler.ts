@@ -3,6 +3,9 @@ import {
   ValidationError,
   RepositoryError,
   ServiceError,
+  AuthenticationError,
+  AuthorizationError,
+  RateLimitError,
 } from "../errors/error";
 import { errorResponse } from "../models/responseModel";
 
@@ -58,7 +61,10 @@ const errorHandler = (
   if (
     err instanceof ValidationError ||
     err instanceof RepositoryError ||
-    err instanceof ServiceError
+    err instanceof ServiceError ||
+    err instanceof AuthenticationError ||
+    err instanceof AuthorizationError ||
+    err instanceof RateLimitError
   ) {
     res.status(err.statusCode).json(errorResponse(err.message, err.code));
   } else {
