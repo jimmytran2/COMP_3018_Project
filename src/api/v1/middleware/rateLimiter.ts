@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 import { RateLimitError } from "../errors/error";
 
-const windowMs: number = 1 * 60 * 1000; // 5 minute window to make requests
+const windowMs: number = 1 * 60 * 1000; // 1 minute window to make requests
 
 const apiLimiter = rateLimit({
   windowMs,

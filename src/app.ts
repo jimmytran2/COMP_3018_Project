@@ -43,8 +43,8 @@ app.get("/api/v1/health", (req, res) => {
 });
 
 app.use("/api/v1/student", rateLimit, studentRoutes);
-app.use("/api/v1/assignment", assignmentRoutes);
-app.use("/api/v1/course", courseRoutes);
+app.use("/api/v1/assignment", rateLimit, assignmentRoutes);
+app.use("/api/v1/course", rateLimit, courseRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
 
