@@ -19,4 +19,4 @@ const apiLimiter = rateLimit({
   },
 });
 
-export default apiLimiter;
+export { apiLimiter };

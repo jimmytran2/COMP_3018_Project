@@ -30,6 +30,10 @@ jest.mock("../src/api/v1/middleware/authorize", () => {
   );
 });
 
+jest.mock("../src/api/v1/middleware/rateLimiter", () => ({
+  apiLimiter: (req: any, res: any, next: any) => next(),
+}));
+
 describe("Course Routes", () => {
   afterEach(() => {
     jest.clearAllMocks();
