@@ -13,6 +13,7 @@ import userRoutes from "./api/v1/routes/userRoutes";
 import adminRoutes from "./api/v1/routes/adminRoutes";
 import setupSwagger from "../config/swagger";
 import errorHandler from "./api/v1/middleware/errorHandler";
+import rateLimit from "./api/v1/middleware/rateLimiter";
 
 const app: Express = express();
 
@@ -41,7 +42,7 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
-app.use("/api/v1/student", studentRoutes);
+app.use("/api/v1/student", rateLimit, studentRoutes);
 app.use("/api/v1/assignment", assignmentRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/user", userRoutes);

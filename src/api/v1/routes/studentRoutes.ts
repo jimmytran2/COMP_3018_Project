@@ -171,7 +171,7 @@ router.get(
 router.get(
   "/:id",
   authenticate,
-  isAuthorized({ hasRole: ["admin", "teacher", "student"] }),
+  isAuthorized({ hasRole: ["admin", "teacher"] }),
   studentController.getStudentById
 );
 
