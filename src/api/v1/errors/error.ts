@@ -128,3 +128,29 @@ export class AuthorizationError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+/**
+ * Class representing a rate limit error.
+ * Extends the built-in Error class to include an error code.
+ */
+export class RateLimitError extends Error {
+  code: string;
+  statusCode: number;
+
+  /**
+   * Creates a new RateLimitError instance.
+   * @param {string} message - The error message.
+   * @param {string} code - The error code.
+   * @param {number} statusCode - The HTTP response code.
+   */
+  constructor(
+    message: string,
+    code: string = "RATE_LIMIT_EXCEEDED",
+    statusCode: number = 429
+  ) {
+    super(message);
+    this.name = "RateLimitError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
